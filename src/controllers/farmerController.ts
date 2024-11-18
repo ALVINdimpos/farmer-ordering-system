@@ -2,7 +2,6 @@ import Farmer from "../models/Farmer";
 import { Request, Response } from "express";
 import { validationResult } from "express-validator";
 import logger from "../../logs/logger";
-// Create a new Farmer
 
 export const createFarmer = async (req: Request, res: Response) => {
   const errors = validationResult(req);
@@ -21,13 +20,12 @@ export const createFarmer = async (req: Request, res: Response) => {
     });
     await newFarmer.save();
 
-    // Populate the 'user' field before sending the response
     const populatedFarmer = await Farmer.findById(newFarmer._id).populate('user', 'username email -_id');  
 
     logger.info("Create Farmer : New farmer created successfully");
     res.status(201).json({
       message: "Farmer created successfully",
-      farmer: populatedFarmer  // This now includes user details
+      farmer: populatedFarmer  
     });
   } catch (error) {
     logger.error("Create Farmer : Error in creating farmer", { error });
@@ -62,7 +60,7 @@ export const getFarmerById = async (req: Request, res: Response) => {
 // Update a Farmer by ID
 export const updateFarmer = async (req: Request, res: Response) => {
   const updates = Object.keys(req.body);
-  const allowedUpdates = ["fullName", "landSize"]; // Fields that can be updated
+  const allowedUpdates = ["fullName", "landSize"]; 
   const isValidOperation = updates.every((update) =>
     allowedUpdates.includes(update)
   );
